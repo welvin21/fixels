@@ -130,3 +130,7 @@ dmypy.json
 
 #datasets
 datasets/
+diabetic-retinopathy-detection.zip
+
+#.DS_Store
+**/.DS_Store
