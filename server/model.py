@@ -5,10 +5,10 @@ import random
 import sys
 import cv2
 import time
-import matplotlib
 import csv
 from subprocess import check_output
 
+from matplotlib import pyplot as plt
 from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
 from keras.preprocessing.image import (
@@ -25,7 +25,9 @@ from keras.utils import to_categorical
 CWD = os.getcwd()
 TRAIN_DATASETS_PATH = os.path.join(os.path.sep, CWD, "datasets/train")
 TRAIN_LABELS_PATH = os.path.join(os.path.sep, CWD, "datasets/trainLabels.csv")
-NUM_CLASSES = 5
+TEST_DATA_SIZE = 0.2
+
+NUM_OF_CLASSES = 5
 WIDTH = 128
 HEIGHT = 128
 DEPTH = 3
@@ -55,15 +57,15 @@ def getTrainData(trainDir, numberOfTrainData=1000):
     global ImageNameDataHash
     startTime = time.time()
     if numberOfTrainData > 35126:
-        print("ERROR: max number of train data exceeded")
+        print("ERROR: max number of train data exceeded\n")
         return
 
     images = os.listdir(trainDir)
     print(
-        "INFO: Number of images found in {}: {} images.".format(trainDir, len(images))
+        "INFO: Number of images found in {}: {} images.\n".format(trainDir, len(images))
     )
     print(
-        "INFO: Fetching {} sample images from training datasets".format(
+        "INFO: Fetching {} sample images from training datasets\n".format(
             numberOfTrainData
         )
     )
@@ -94,7 +96,7 @@ def getTrainData(trainDir, numberOfTrainData=1000):
         if len(ImageNameDataHash) == numberOfTrainData:
             break
     print(
-        "INFO: Successfully loaded {} images within {} seconds".format(
+        "INFO: Successfully loaded {} images within {} seconds\n".format(
             numberOfTrainData, time.time() - startTime
         )
     )
@@ -105,7 +107,7 @@ def getTrainLabels(fileLocation):
     rawDF = pd.read_csv(fileLocation)
     numOfRows, numOfColumns = rawDF.shape[0], rawDF.shape[1]
     print(
-        "INFO: fetching train labels csv, found {} rows and {} columns of data".format(
+        "INFO: fetching train labels csv, found {} rows and {} columns of data\n".format(
             numOfRows, numOfColumns
         )
     )
@@ -135,9 +137,9 @@ def getTrainLabels(fileLocation):
                     patientID, leftLevel, rightLevel
                 )
             )
-
+    print()
     print("INFO: number of inconsistent data: {}".format(inconsistentDataCount))
-    print("INFO: number of unique patients: {}".format(len(patientIDList)))
+    print("INFO: number of unique patients: {}\n".format(len(patientIDList)))
     return rawDF
 
 
@@ -165,3 +167,47 @@ if trainLabelsDF.shape[0] != mainDF.shape[0]:
             trainLabelsDF.shape[0], mainDF.shape[0]
         )
     )
+
+# Merge trainLabelsDF to mainDF
+mainDF = pd.merge(trainLabelsDF, mainDF, left_on="image", right_on="image", how="outer")
+
+# Split data into train and test data
+print(
+    "INFO: splitting dataset into train and test (test size : {}%)\n".format(
+        TEST_DATA_SIZE * 100
+    )
+)
+sys.stdout.flush()
+uniqueIDs = mainDF.PatientID.unique()
+trainIDs, testIDs = train_test_split(
+    uniqueIDs, test_size=TEST_DATA_SIZE, random_state=10
+)
+
+print("INFO: train-test split is successfully done\n")
+print("INFO: train data size: {}\n".format(len(trainIDs.tolist())))
+print("INFO: test data size: {}\n".format(len(testIDs.tolist())))
+
+# Further processing of train and test data
+train = mainDF[mainDF.PatientID.isin(trainIDs.tolist())]
+test = mainDF[~mainDF.PatientID.isin(trainIDs.tolist())]
+
+train = train.reset_index(drop=True)
+test = test.reset_index(drop=True)
+
+trainX, trainY = train["data"], train["level"]
+testX, testY = test["data"], test["level"]
+
+trainY = to_categorical(trainY, num_classes=NUM_OFCLASSES)
+testY = to_categorical(testY, num_classes=NUM_OF_CLASSES)
+
+# construct the image generator for data augmentation
+sys.stdout.flush()
+aug = ImageDataGenerator(
+    rotation_range=30,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    fill_mode="nearest",
+)
