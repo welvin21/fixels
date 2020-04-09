@@ -111,15 +111,15 @@ def getTrainLabels(fileLocation):
     )
 
     # Double check if left and right data of a particular patient are the same
-    rawDF['PatientID'] = ''
+    rawDF["PatientID"] = ""
     ImageLevelHash = {}
     patientIDList = set()
     for index, row in rawDF.iterrows():
-        key = row[0] + ''
-        patientID = row[0] + ''
-        patientID = patientID.replace('_right','')
-        patientID = patientID.replace('_left','')
-        rawDF.at[index, 'PatientID'] = patientID
+        key = row[0] + ""
+        patientID = row[0] + ""
+        patientID = patientID.replace("_right", "")
+        patientID = patientID.replace("_left", "")
+        rawDF.at[index, "PatientID"] = patientID
         patientIDList.add(patientID)
         ImageLevelHash[key] = str(row[1])
 
@@ -128,9 +128,13 @@ def getTrainLabels(fileLocation):
         leftLevel = ImageLevelHash["{}_left".format(patientID)]
         rightLevel = ImageLevelHash["{}_right".format(patientID)]
 
-        if(leftLevel != rightLevel):
+        if leftLevel != rightLevel:
             inconsistentDataCount += 1
-            print("WARNING: patient {}'s data are not consistent. left -> {}. right -> {}".format(patientID, leftLevel, rightLevel))
+            print(
+                "WARNING: patient {}'s data are not consistent. left -> {}. right -> {}".format(
+                    patientID, leftLevel, rightLevel
+                )
+            )
 
     print("INFO: number of inconsistent data: {}".format(inconsistentDataCount))
     print("INFO: number of unique patients: {}".format(len(patientIDList)))
