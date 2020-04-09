@@ -7,19 +7,16 @@ import cv2
 import time
 import csv
 from subprocess import check_output
-
 from matplotlib import pyplot as plt
-from keras.models import Sequential
-from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
 from keras.preprocessing.image import (
     ImageDataGenerator,
     array_to_img,
     img_to_array,
     load_img,
 )
-from keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
 from keras.utils import to_categorical
+from model import createModel
 
 # Declare constant variables
 CWD = os.getcwd()
@@ -143,6 +140,13 @@ def getTrainLabels(fileLocation):
     return rawDF
 
 
+def reshapeData(dataframe):
+    output = np.zeros([dataframe.shape[0], HEIGHT, WIDTH, DEPTH])
+    for i in range(dataframe.shape[0]):
+        output[i] = dataframe[i]
+    return output
+
+
 getTrainData(TRAIN_DATASETS_PATH, 20)
 trainLabelsDF = getTrainLabels(TRAIN_LABELS_PATH)
 
@@ -197,7 +201,7 @@ test = test.reset_index(drop=True)
 trainX, trainY = train["data"], train["level"]
 testX, testY = test["data"], test["level"]
 
-trainY = to_categorical(trainY, num_classes=NUM_OFCLASSES)
+trainY = to_categorical(trainY, num_classes=NUM_OF_CLASSES)
 testY = to_categorical(testY, num_classes=NUM_OF_CLASSES)
 
 # construct the image generator for data augmentation
@@ -211,3 +215,12 @@ aug = ImageDataGenerator(
     horizontal_flip=True,
     fill_mode="nearest",
 )
+
+# initialize model
+print("INFO: compiling cnn model\n")
+model = createModel(inputShape, NUM_OF_CLASSES)
+print("INFO: model is ready : {}\n".format(model))
+
+# reshape data before training process
+trainX = reshapeData(trainX)
+testX = reshapeData(testX)
