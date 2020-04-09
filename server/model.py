@@ -52,12 +52,12 @@ def convertClassToInt(label):
 
 
 def getTrainData(trainDir, numberOfTrainData=1000):
+    global ImageNameDataHash
     startTime = time.time()
     if numberOfTrainData > 35126:
         print("ERROR: max number of train data exceeded")
         return
 
-    global ImageNameDataHash
     images = os.listdir(trainDir)
     print(
         "INFO: Number of images found in {}: {} images.".format(trainDir, len(images))
@@ -141,5 +141,27 @@ def getTrainLabels(fileLocation):
     return rawDF
 
 
-getTrainData(TRAIN_DATASETS_PATH, 200)
-trainLabels = getTrainLabels(TRAIN_LABELS_PATH)
+getTrainData(TRAIN_DATASETS_PATH, 20)
+trainLabelsDF = getTrainLabels(TRAIN_LABELS_PATH)
+
+keepImages = list(ImageNameDataHash.keys())
+trainLabelsDF = trainLabelsDF[trainLabelsDF["image"].isin(keepImages)]
+
+# Combine train image labels and data to one dataframe
+imageName, imageData = [], []
+for index, row in trainLabelsDF.iterrows():
+    key = str(row[0])
+    if key in ImageNameDataHash:
+        value = ImageNameDataHash[key]
+        imageName.append(key)
+        imageData.append(np.array(value))
+
+mainDF = pd.DataFrame({"image": imageName, "data": imageData})
+
+# trainLabelsDF and mainDF have to be in the same length
+if trainLabelsDF.shape[0] != mainDF.shape[0]:
+    print(
+        "ERROR: trainLabelsDF (length: {}) is not the same length as mainDF (length: {})".format(
+            trainLabelsDF.shape[0], mainDF.shape[0]
+        )
+    )
