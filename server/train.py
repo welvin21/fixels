@@ -15,13 +15,14 @@ from keras.preprocessing.image import (
     load_img,
 )
 from sklearn.model_selection import train_test_split
-from keras.utils import to_categorical
+from keras.utils import to_categorical, print_summary
 from model import createModel
 
 # Declare constant variables
 CWD = os.getcwd()
 TRAIN_DATASETS_PATH = os.path.join(os.path.sep, CWD, "datasets/train")
 TRAIN_LABELS_PATH = os.path.join(os.path.sep, CWD, "datasets/trainLabels.csv")
+TRAIN_DATA_SIZE = 5000
 TEST_DATA_SIZE = 0.2
 
 NUM_OF_CLASSES = 5
@@ -33,7 +34,7 @@ inputShape = (HEIGHT, WIDTH, DEPTH)
 # Initialize number of epochs to train for, initial learning rate and batch size
 EPOCHS = 15
 INIT_LR = 1e-3
-BS = 32
+BS = 200
 
 ImageNameDataHash = {}
 uniquePatientIDList = []
@@ -89,6 +90,9 @@ def getTrainData(trainDir, numberOfTrainData=1000):
         # Store np.array version of image to ImageNameDataHash
         arr = np.array(arr, dtype="float")
         ImageNameDataHash[image.replace(".jpeg", "")] = np.array(arr)
+
+        if len(ImageNameDataHash) % 100 == 0:
+            print("INFO: Successfully loaded {} images".format(len(ImageNameDataHash)))
 
         if len(ImageNameDataHash) == numberOfTrainData:
             break
@@ -147,7 +151,7 @@ def reshapeData(dataframe):
     return output
 
 
-getTrainData(TRAIN_DATASETS_PATH, 20)
+getTrainData(TRAIN_DATASETS_PATH, TRAIN_DATA_SIZE)
 trainLabelsDF = getTrainLabels(TRAIN_LABELS_PATH)
 
 keepImages = list(ImageNameDataHash.keys())
@@ -204,6 +208,10 @@ testX, testY = test["data"], test["level"]
 trainY = to_categorical(trainY, num_classes=NUM_OF_CLASSES)
 testY = to_categorical(testY, num_classes=NUM_OF_CLASSES)
 
+# reshape data before training process
+trainX = reshapeData(trainX)
+testX = reshapeData(testX)
+
 # construct the image generator for data augmentation
 sys.stdout.flush()
 aug = ImageDataGenerator(
@@ -220,7 +228,22 @@ aug = ImageDataGenerator(
 print("INFO: compiling cnn model\n")
 model = createModel(inputShape, NUM_OF_CLASSES)
 print("INFO: model is ready : {}\n".format(model))
+print("INFO: model summary")
+print_summary(model, line_length=None, positions=None, print_fn=None)
 
-# reshape data before training process
-trainX = reshapeData(trainX)
-testX = reshapeData(testX)
+# train the network
+print("INFO: training previously created cnn model")
+sys.stdout.flush()
+
+train = model.fit(
+    aug.flow(trainX, trainY, batch_size=BS),
+    validation_data=(testX, testY),
+    steps_per_epoch=len(trainX) // BS,
+    epochs=EPOCHS,
+    verbose=2,
+)
+
+# save model to local machine
+print("INFO: saving model to disk")
+sys.stdout.flush()
+model.save("/tmp/DRmodel")
