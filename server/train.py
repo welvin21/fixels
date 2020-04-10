@@ -6,6 +6,7 @@ import sys
 import cv2
 import time
 import csv
+from argparse import ArgumentParser
 from subprocess import check_output
 from matplotlib import pyplot as plt
 from keras.preprocessing.image import (
@@ -18,11 +19,16 @@ from sklearn.model_selection import train_test_split
 from keras.utils import to_categorical, print_summary
 from model import createModel
 
+# Fetch training param from argparse
+argParser = ArgumentParser()
+argParser.add_argument('-t', '--train-size', default=1000, help="Training data size (max 35126)", type=int)
+args = vars(argParser.parse_args())
+
 # Declare constant variables
 CWD = os.getcwd()
 TRAIN_DATASETS_PATH = os.path.join(os.path.sep, CWD, "datasets/train")
 TRAIN_LABELS_PATH = os.path.join(os.path.sep, CWD, "datasets/trainLabels.csv")
-TRAIN_DATA_SIZE = 5000
+TRAIN_DATA_SIZE = args['train_size']
 TEST_DATA_SIZE = 0.2
 
 NUM_OF_CLASSES = 5

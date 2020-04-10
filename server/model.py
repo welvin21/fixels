@@ -5,8 +5,6 @@ from keras.optimizers import Adam
 # Initialize number of epochs to train for, initial learning rate and batch size
 EPOCHS = 15
 INIT_LR = 1e-3
-BS = 32
-
 
 def createModel(inputShape, numOfClasses):
     model = Sequential()
