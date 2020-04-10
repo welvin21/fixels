@@ -21,14 +21,16 @@ from model import createModel
 
 # Fetch training param from argparse
 argParser = ArgumentParser()
-argParser.add_argument('-t', '--train-size', default=1000, help="Training data size (max 35126)", type=int)
+argParser.add_argument(
+    "-t", "--train-size", default=1000, help="Training data size (max 35126)", type=int
+)
 args = vars(argParser.parse_args())
 
 # Declare constant variables
 CWD = os.getcwd()
 TRAIN_DATASETS_PATH = os.path.join(os.path.sep, CWD, "datasets/train")
 TRAIN_LABELS_PATH = os.path.join(os.path.sep, CWD, "datasets/trainLabels.csv")
-TRAIN_DATA_SIZE = args['train_size']
+TRAIN_DATA_SIZE = args["train_size"]
 TEST_DATA_SIZE = 0.2
 
 NUM_OF_CLASSES = 5
@@ -38,9 +40,9 @@ DEPTH = 3
 inputShape = (HEIGHT, WIDTH, DEPTH)
 
 # Initialize number of epochs to train for, initial learning rate and batch size
-EPOCHS = 15
+EPOCHS = 10
 INIT_LR = 1e-3
-BS = 200
+BS = 100
 
 ImageNameDataHash = {}
 uniquePatientIDList = []
@@ -241,15 +243,18 @@ print_summary(model, line_length=None, positions=None, print_fn=None)
 print("INFO: training previously created cnn model")
 sys.stdout.flush()
 
-train = model.fit(
+history = model.fit(
     aug.flow(trainX, trainY, batch_size=BS),
     validation_data=(testX, testY),
     steps_per_epoch=len(trainX) // BS,
     epochs=EPOCHS,
-    verbose=2,
+    verbose=1,
 )
+loss, acc = model.evaluate(testX, testY, verbose=1)
+print("\nINFO: Original model, accuracy: {:5.2f}%\n".format(acc * 100))
 
 # save model to local machine
 print("INFO: saving model to disk")
 sys.stdout.flush()
-model.save("/tmp/DRmodel")
+model.reset_metrics()
+model.save("./DRmodel.h5")

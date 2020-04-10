@@ -6,6 +6,7 @@ from keras.optimizers import Adam
 EPOCHS = 15
 INIT_LR = 1e-3
 
+
 def createModel(inputShape, numOfClasses):
     model = Sequential()
     model.add(
