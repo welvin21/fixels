@@ -128,9 +128,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-#datasets
+# datasets
 datasets/
 diabetic-retinopathy-detection.zip
 
-#.DS_Store
+# .DS_Store
 **/.DS_Store
+
+# model
+*.h5
