@@ -48,17 +48,6 @@ ImageNameDataHash = {}
 uniquePatientIDList = []
 
 
-def convertIntToClass(i):
-    switcher = {0: "No DR", 1: "Mild", 2: "Moderate", 3: "Severe", 4: "Proliferative"}
-    return switcher.get(i, "Invalid class")
-
-
-def convertClassToInt(label):
-    label = label.strip()
-    switcher = {"No DR": 0, "Mild": 1, "Moderate": 2, "Severe": 3, "Proliferative": 4}
-    return switcher.get(label, "Invalid class")
-
-
 def getTrainData(trainDir, numberOfTrainData=1000):
     global ImageNameDataHash
     startTime = time.time()
