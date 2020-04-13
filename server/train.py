@@ -42,18 +42,29 @@ inputShape = (HEIGHT, WIDTH, DEPTH)
 # Initialize number of epochs to train for, initial learning rate and batch size
 EPOCHS = 10
 INIT_LR = 1e-3
-BS = 100
+BS = 32
 
 ImageNameDataHash = {}
 uniquePatientIDList = []
+inconsistentIDs = []
 
+def fetchInconsistentIDs():
+    global inconsistentIDs
+    f = open('./inconsistentIDS.txt', 'r')
+    for line in f.readlines():
+        try:
+            inconsistentIDs.append(int(line))
+        except Exception as e:
+            print('Exception error: {}'.format(e))
+    f.close()
+fetchInconsistentIDs()
 
 def getTrainData(trainDir, numberOfTrainData=1000):
     global ImageNameDataHash
     startTime = time.time()
     if numberOfTrainData > 35126:
         print("ERROR: max number of train data exceeded\n")
-        return
+        exit()
 
     images = os.listdir(trainDir)
     print(
@@ -65,6 +76,10 @@ def getTrainData(trainDir, numberOfTrainData=1000):
         )
     )
     for image in images:
+        # skip image if the label for left and right eyes are inconsistent
+        patientID = int(image[: image.find('_')])
+        if(patientID in inconsistentIDs):
+            continue
         imageFullPath = os.path.join(os.path.sep, trainDir, image)
         loadedImage = load_img(imageFullPath)
         arr = img_to_array(loadedImage)
