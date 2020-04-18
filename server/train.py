@@ -62,6 +62,7 @@ ImageNameDataHash = {}
 uniquePatientIDList = []
 inconsistentIDs = []
 
+
 def fetchInconsistentIDs():
     global inconsistentIDs
     f = open("./inconsistentIDs.txt", "r")
@@ -71,7 +72,10 @@ def fetchInconsistentIDs():
         except Exception as e:
             print("Exception error: {}".format(e))
     f.close()
+
+
 fetchInconsistentIDs()
+
 
 def getTrainData(trainDir, numberOfTrainData=1000):
     global ImageNameDataHash
