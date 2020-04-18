@@ -3,7 +3,7 @@ from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
 from keras.optimizers import Adam
 
 # Initialize number of epochs to train for, initial learning rate and batch size
-EPOCHS = 15
+EPOCHS = 10
 INIT_LR = 1e-3
 
 
