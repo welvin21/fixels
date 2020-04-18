@@ -137,3 +137,6 @@ diabetic-retinopathy-detection.zip
 
 # model
 *.h5
+
+# utils
+utils/
