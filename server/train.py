@@ -22,18 +22,32 @@ from model import createModel
 # Fetch training param from argparse
 argParser = ArgumentParser()
 argParser.add_argument(
-    "-t", "--train-size", default=1000, help="Training data size (max 35126)", type=int
+    "-t", "--train-size", default=1000, help="Training data size", type=int
+)
+argParser.add_argument(
+    "-f",
+    "--folder",
+    required=True,
+    help="Relative path of the training dataset",
+    type=str,
+)
+argParser.add_argument(
+    "-l",
+    "--labels",
+    required=True,
+    help="Relative path of predicted value (labels) in .csv format",
+    type=str,
 )
 args = vars(argParser.parse_args())
 
 # Declare constant variables
 CWD = os.getcwd()
-TRAIN_DATASETS_PATH = os.path.join(os.path.sep, CWD, "datasets/train")
-TRAIN_LABELS_PATH = os.path.join(os.path.sep, CWD, "datasets/trainLabels.csv")
+TRAIN_DATASETS_PATH = os.path.join(os.path.sep, CWD, args["folder"])
+TRAIN_LABELS_PATH = os.path.join(os.path.sep, CWD, args["labels"])
 TRAIN_DATA_SIZE = args["train_size"]
 TEST_DATA_SIZE = 0.2
 
-NUM_OF_CLASSES = 5
+NUM_OF_CLASSES = 2
 WIDTH = 128
 HEIGHT = 128
 DEPTH = 3
@@ -48,23 +62,24 @@ ImageNameDataHash = {}
 uniquePatientIDList = []
 inconsistentIDs = []
 
+
 def fetchInconsistentIDs():
     global inconsistentIDs
-    f = open('./inconsistentIDS.txt', 'r')
+    f = open("./inconsistentIDs.txt", "r")
     for line in f.readlines():
         try:
             inconsistentIDs.append(int(line))
         except Exception as e:
-            print('Exception error: {}'.format(e))
+            print("Exception error: {}".format(e))
     f.close()
+
+
 fetchInconsistentIDs()
+
 
 def getTrainData(trainDir, numberOfTrainData=1000):
     global ImageNameDataHash
     startTime = time.time()
-    if numberOfTrainData > 35126:
-        print("ERROR: max number of train data exceeded\n")
-        exit()
 
     images = os.listdir(trainDir)
     print(
@@ -77,8 +92,8 @@ def getTrainData(trainDir, numberOfTrainData=1000):
     )
     for image in images:
         # skip image if the label for left and right eyes are inconsistent
-        patientID = int(image[: image.find('_')])
-        if(patientID in inconsistentIDs):
+        patientID = int(image[: image.find("_")])
+        if patientID in inconsistentIDs:
             continue
         imageFullPath = os.path.join(os.path.sep, trainDir, image)
         loadedImage = load_img(imageFullPath)
