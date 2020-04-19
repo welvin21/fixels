@@ -12,14 +12,16 @@ from model import createModel
 # fetch image data as paramater
 argParser = ArgumentParser()
 argParser.add_argument(
-    "-i", "--image", required=True, help="relative path to input image", type=str
+    "-i", "--image", default='./', help="relative path to input image", type=str
+)
+argParser.add_argument(
+    "-m", "--model", required=True, help="relative path to model weights in .h5 format", type=str
 )
 args = vars(argParser.parse_args())
 
 # declare constant variables
 CWD = os.getcwd()
-MODEL_WEIGHT_FILENAME = "DR_model_weights.h5"
-PATH_TO_MODEL_WEIGHT = os.path.join(os.path.sep, CWD, MODEL_WEIGHT_FILENAME)
+PATH_TO_MODEL_WEIGHT = os.path.join(os.path.sep, CWD, args['model'])
 PATH_TO_INPUT_IMAGE = os.path.join(os.path.sep, CWD, args["image"])
 
 WIDTH = 512
@@ -46,26 +48,32 @@ def convertImage(imageFullPath):
     return arr
 
 
-# convert image to np.array format
-print("INFO: converting image {}".format(PATH_TO_INPUT_IMAGE))
-arr = convertImage(PATH_TO_INPUT_IMAGE)
-
 # load model
 model = createModel(inputShape, NUM_OF_CLASSES)
 model.load_weights(PATH_TO_MODEL_WEIGHT)
-print("INFO: model: {}".format(model))
 
-# predict the confidence values of each classes
-print("INFO: predicting input image\n")
-prediction = model.predict(arr)
 
-print("INFO: prediction probability result :\n")
-predictionProbabilities = prediction[0].tolist()
-for i, probability in enumerate(predictionProbabilities):
-    className = convertIntToClass(i)
-    print("{}: {:0.4f}%".format(className, 100 * probability))
+def predict(pathToInputImage):
+    # convert image to np.array format
+    print("INFO: converting image {}".format(pathToInputImage))
+    arr = convertImage(pathToInputImage)
 
-# generate the actual class predicted
-predictedLabel = prediction.argmax(axis=-1)
-predictedClass = convertIntToClass(predictedLabel[0])
-print("\nINFO: predicted class result: {}".format(predictedClass))
+    # predict the confidence values of each classes
+    print("INFO: predicting input image\n")
+    prediction = model.predict(arr)
+
+    print("INFO: prediction probability result :\n")
+    predictionProbabilities = prediction[0].tolist()
+    for i, probability in enumerate(predictionProbabilities):
+        className = convertIntToClass(i)
+        print("{}: {:0.4f}%".format(className, 100 * probability))
+
+    # generate the actual class predicted
+    predictedLabel = prediction.argmax(axis=-1)
+    predictedClass = convertIntToClass(predictedLabel[0])
+    print("\nINFO: predicted class result: {}".format(predictedClass))
+    return (predictionProbabilities, predictedLabel, predictedClass)
+
+
+if __name__ == "__main__":
+    predict(PATH_TO_INPUT_IMAGE)

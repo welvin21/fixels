@@ -62,12 +62,14 @@ BS = 32
 ImageNameDataHash = {}
 uniquePatientIDList = []
 
+
 def removeExt(filename):
-    exts = ['.jpg', '.png', '.jpeg']
+    exts = [".jpg", ".png", ".jpeg"]
     for ext in exts:
-        filename = filename.replace(ext, '')
-        filename = filename.replace(ext.upper(), '')
+        filename = filename.replace(ext, "")
+        filename = filename.replace(ext.upper(), "")
     return filename
+
 
 def getTrainData(trainDir, numberOfTrainData=1000):
     global ImageNameDataHash
@@ -229,7 +231,7 @@ history = model.fit(
     steps_per_epoch=len(trainX) // BS,
     epochs=EPOCHS,
     verbose=1,
-    callbacks=[stop]
+    callbacks=[stop],
 )
 loss, acc, precision, recall = model.evaluate(testX, testY, verbose=1)
 print("\nINFO: Original model, accuracy: {:5.2f}%".format(acc * 100))
