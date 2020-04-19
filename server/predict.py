@@ -26,13 +26,13 @@ WIDTH = 512
 HEIGHT = 512
 DEPTH = 3
 inputShape = (HEIGHT, WIDTH, DEPTH)
-NUM_OF_CLASSES = 5
+NUM_OF_CLASSES = 2
 # Initialize number of epochs to train for, initial learning rate and batch size
 BS = 32
 
 
 def convertIntToClass(i):
-    switcher = {0: "No DR", 1: "Mild", 2: "Moderate", 3: "Severe", 4: "Proliferative"}
+    switcher = {0: "No DR", 1: "DR"}
     return switcher.get(i, "Invalid class")
 
 

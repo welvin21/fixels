@@ -48,7 +48,7 @@ TRAIN_LABELS_PATH = os.path.join(os.path.sep, CWD, args["labels"])
 TRAIN_DATA_SIZE = args["train_size"]
 TEST_DATA_SIZE = 0.2
 
-NUM_OF_CLASSES = 5
+NUM_OF_CLASSES = 2
 WIDTH = 512
 HEIGHT = 512
 DEPTH = 3
