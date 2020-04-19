@@ -17,6 +17,7 @@ from keras.preprocessing.image import (
 )
 from sklearn.model_selection import train_test_split
 from keras.utils import to_categorical, print_summary
+from keras.callbacks import EarlyStopping
 from model import createModel
 
 # Fetch training param from argparse
@@ -48,34 +49,25 @@ TRAIN_DATA_SIZE = args["train_size"]
 TEST_DATA_SIZE = 0.2
 
 NUM_OF_CLASSES = 2
-WIDTH = 128
-HEIGHT = 128
+WIDTH = 512
+HEIGHT = 512
 DEPTH = 3
 inputShape = (HEIGHT, WIDTH, DEPTH)
 
 # Initialize number of epochs to train for, initial learning rate and batch size
 EPOCHS = 10
-INIT_LR = 1e-3
+INIT_LR = 1e-4
 BS = 32
 
 ImageNameDataHash = {}
 uniquePatientIDList = []
-inconsistentIDs = []
 
-
-def fetchInconsistentIDs():
-    global inconsistentIDs
-    f = open("./inconsistentIDs.txt", "r")
-    for line in f.readlines():
-        try:
-            inconsistentIDs.append(int(line))
-        except Exception as e:
-            print("Exception error: {}".format(e))
-    f.close()
-
-
-fetchInconsistentIDs()
-
+def removeExt(filename):
+    exts = ['.jpg', '.png', '.jpeg']
+    for ext in exts:
+        filename = filename.replace(ext, '')
+        filename = filename.replace(ext.upper(), '')
+    return filename
 
 def getTrainData(trainDir, numberOfTrainData=1000):
     global ImageNameDataHash
@@ -91,10 +83,6 @@ def getTrainData(trainDir, numberOfTrainData=1000):
         )
     )
     for image in images:
-        # skip image if the label for left and right eyes are inconsistent
-        patientID = int(image[: image.find("_")])
-        if patientID in inconsistentIDs:
-            continue
         imageFullPath = os.path.join(os.path.sep, trainDir, image)
         loadedImage = load_img(imageFullPath)
         arr = img_to_array(loadedImage)
@@ -116,7 +104,7 @@ def getTrainData(trainDir, numberOfTrainData=1000):
 
         # Store np.array version of image to ImageNameDataHash
         arr = np.array(arr, dtype="float")
-        ImageNameDataHash[image.replace(".jpeg", "")] = np.array(arr)
+        ImageNameDataHash[removeExt(image)] = np.array(arr)
 
         if len(ImageNameDataHash) % 100 == 0:
             print("INFO: Successfully loaded {} images".format(len(ImageNameDataHash)))
@@ -139,35 +127,6 @@ def getTrainLabels(fileLocation):
             numOfRows, numOfColumns
         )
     )
-
-    # Double check if left and right data of a particular patient are the same
-    rawDF["PatientID"] = ""
-    ImageLevelHash = {}
-    patientIDList = set()
-    for index, row in rawDF.iterrows():
-        key = row[0] + ""
-        patientID = row[0] + ""
-        patientID = patientID.replace("_right", "")
-        patientID = patientID.replace("_left", "")
-        rawDF.at[index, "PatientID"] = patientID
-        patientIDList.add(patientID)
-        ImageLevelHash[key] = str(row[1])
-
-    inconsistentDataCount = 0
-    for patientID in patientIDList:
-        leftLevel = ImageLevelHash["{}_left".format(patientID)]
-        rightLevel = ImageLevelHash["{}_right".format(patientID)]
-
-        if leftLevel != rightLevel:
-            inconsistentDataCount += 1
-            print(
-                "WARNING: patient {}'s data are not consistent. left -> {}. right -> {}".format(
-                    patientID, leftLevel, rightLevel
-                )
-            )
-    print()
-    print("INFO: number of inconsistent data: {}".format(inconsistentDataCount))
-    print("INFO: number of unique patients: {}\n".format(len(patientIDList)))
     return rawDF
 
 
@@ -213,7 +172,7 @@ print(
     )
 )
 sys.stdout.flush()
-uniqueIDs = mainDF.PatientID.unique()
+uniqueIDs = mainDF.image.unique()
 trainIDs, testIDs = train_test_split(
     uniqueIDs, test_size=TEST_DATA_SIZE, random_state=10
 )
@@ -223,8 +182,8 @@ print("INFO: train data size: {}\n".format(len(trainIDs.tolist())))
 print("INFO: test data size: {}\n".format(len(testIDs.tolist())))
 
 # Further processing of train and test data
-train = mainDF[mainDF.PatientID.isin(trainIDs.tolist())]
-test = mainDF[~mainDF.PatientID.isin(trainIDs.tolist())]
+train = mainDF[mainDF.image.isin(trainIDs.tolist())]
+test = mainDF[~mainDF.image.isin(trainIDs.tolist())]
 
 train = train.reset_index(drop=True)
 test = test.reset_index(drop=True)
@@ -262,18 +221,22 @@ print_summary(model, line_length=None, positions=None, print_fn=None)
 print("INFO: training previously created cnn model")
 sys.stdout.flush()
 
+stop = EarlyStopping(monitor="val_accuracy", min_delta=0.001, patience=3, mode="auto")
+
 history = model.fit(
     aug.flow(trainX, trainY, batch_size=BS),
     validation_data=(testX, testY),
     steps_per_epoch=len(trainX) // BS,
     epochs=EPOCHS,
     verbose=1,
+    callbacks=[stop]
 )
-loss, acc = model.evaluate(testX, testY, verbose=1)
-print("\nINFO: Original model, accuracy: {:5.2f}%\n".format(acc * 100))
+loss, acc, precision, recall = model.evaluate(testX, testY, verbose=1)
+print("\nINFO: Original model, accuracy: {:5.2f}%".format(acc * 100))
+print("INFO: Original model, precision: {:5.2f}%\n".format(precision * 100))
 
 # save model to local machine
 print("INFO: saving model to disk")
 sys.stdout.flush()
 model.reset_metrics()
-model.save("./DRmodel.h5")
+model.save_weights("./DR_model_weights.h5")

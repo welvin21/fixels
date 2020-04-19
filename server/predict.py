@@ -7,6 +7,7 @@ from keras.preprocessing.image import (
     img_to_array,
     load_img,
 )
+from model import createModel
 
 # fetch image data as paramater
 argParser = ArgumentParser()
@@ -17,21 +18,21 @@ args = vars(argParser.parse_args())
 
 # declare constant variables
 CWD = os.getcwd()
-MODEL_FILENAME = "DRModel.h5"
-PATH_TO_MODEL = os.path.join(os.path.sep, CWD, MODEL_FILENAME)
+MODEL_WEIGHT_FILENAME = "DR_model_weights.h5"
+PATH_TO_MODEL_WEIGHT = os.path.join(os.path.sep, CWD, MODEL_WEIGHT_FILENAME)
 PATH_TO_INPUT_IMAGE = os.path.join(os.path.sep, CWD, args["image"])
 
-WIDTH = 128
-HEIGHT = 128
+WIDTH = 512
+HEIGHT = 512
 DEPTH = 3
 inputShape = (HEIGHT, WIDTH, DEPTH)
-
+NUM_OF_CLASSES = 2
 # Initialize number of epochs to train for, initial learning rate and batch size
-BS = 100
+BS = 32
 
 
 def convertIntToClass(i):
-    switcher = {0: "No DR", 1: "Mild", 2: "Moderate", 3: "Severe", 4: "Proliferative"}
+    switcher = {0: "No DR", 1: "DR"}
     return switcher.get(i, "Invalid class")
 
 
@@ -50,9 +51,8 @@ print("INFO: converting image {}".format(PATH_TO_INPUT_IMAGE))
 arr = convertImage(PATH_TO_INPUT_IMAGE)
 
 # load model
-print("INFO: loading pre-trained model from {}\n".format(PATH_TO_MODEL))
-model = load_model(PATH_TO_MODEL)
-print("INFO: successfully loaded model from {}\n".format(PATH_TO_MODEL))
+model = createModel(inputShape, NUM_OF_CLASSES)
+model.load_weights(PATH_TO_MODEL_WEIGHT)
 print("INFO: model: {}".format(model))
 
 # predict the confidence values of each classes
