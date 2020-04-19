@@ -21,13 +21,13 @@ MODEL_FILENAME = "DRModel.h5"
 PATH_TO_MODEL = os.path.join(os.path.sep, CWD, MODEL_FILENAME)
 PATH_TO_INPUT_IMAGE = os.path.join(os.path.sep, CWD, args["image"])
 
-WIDTH = 128
-HEIGHT = 128
+WIDTH = 512
+HEIGHT = 512
 DEPTH = 3
 inputShape = (HEIGHT, WIDTH, DEPTH)
 
 # Initialize number of epochs to train for, initial learning rate and batch size
-BS = 100
+BS = 32
 
 
 def convertIntToClass(i):
