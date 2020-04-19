@@ -231,8 +231,9 @@ history = model.fit(
     verbose=1,
     callbacks=[stop]
 )
-loss, acc = model.evaluate(testX, testY, verbose=1)
-print("\nINFO: Original model, accuracy: {:5.2f}%\n".format(acc * 100))
+loss, acc, precision, recall = model.evaluate(testX, testY, verbose=1)
+print("\nINFO: Original model, accuracy: {:5.2f}%".format(acc * 100))
+print("INFO: Original model, precision: {:5.2f}%\n".format(precision * 100))
 
 # save model to local machine
 print("INFO: saving model to disk")
