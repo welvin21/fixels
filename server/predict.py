@@ -12,14 +12,16 @@ from model import createModel
 # fetch image data as paramater
 argParser = ArgumentParser()
 argParser.add_argument(
-    "-i", "--image", required=True, help="relative path to input image", type=str
+    "-i", "--image", default='./', help="relative path to input image", type=str
+)
+argParser.add_argument(
+    "-m", "--model", required=True, help="relative path to model weights in .h5 format", type=str
 )
 args = vars(argParser.parse_args())
 
 # declare constant variables
 CWD = os.getcwd()
-MODEL_WEIGHT_FILENAME = "DR_model_weights.h5"
-PATH_TO_MODEL_WEIGHT = os.path.join(os.path.sep, CWD, MODEL_WEIGHT_FILENAME)
+PATH_TO_MODEL_WEIGHT = os.path.join(os.path.sep, CWD, args['model'])
 PATH_TO_INPUT_IMAGE = os.path.join(os.path.sep, CWD, args["image"])
 
 WIDTH = 512
