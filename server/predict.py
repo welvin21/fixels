@@ -45,9 +45,11 @@ def convertImage(imageFullPath):
     arr = arr.reshape(-1, HEIGHT, WIDTH, DEPTH)
     return arr
 
+
 # load model
 model = createModel(inputShape, NUM_OF_CLASSES)
 model.load_weights(PATH_TO_MODEL_WEIGHT)
+
 
 def predict(pathToInputImage):
     # convert image to np.array format
@@ -70,5 +72,6 @@ def predict(pathToInputImage):
     print("\nINFO: predicted class result: {}".format(predictedClass))
     return (predictionProbabilities, predictedLabel, predictedClass)
 
-if(__name__ == '__main__'):
+
+if __name__ == "__main__":
     predict(PATH_TO_INPUT_IMAGE)

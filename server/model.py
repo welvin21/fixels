@@ -10,10 +10,16 @@ INIT_LR = 1e-4
 
 def createModel(inputShape, numOfClasses):
     model = Sequential()
-    model.add(Conv2D(32, (4, 4),
-                            padding="valid",
-                            strides=1,
-                            input_shape=inputShape, activation="relu"))
+    model.add(
+        Conv2D(
+            32,
+            (4, 4),
+            padding="valid",
+            strides=1,
+            input_shape=inputShape,
+            activation="relu",
+        )
+    )
 
     model.add(Conv2D(32, (4, 4), activation="relu"))
 
@@ -32,7 +38,9 @@ def createModel(inputShape, numOfClasses):
     model.add(Dense(numOfClasses, activation="softmax"))
 
     opt = Adam(lr=INIT_LR, decay=INIT_LR / EPOCHS)
-    model.compile(loss="categorical_crossentropy",
-                        optimizer=opt,
-                        metrics=["accuracy", Precision(), Recall()])
+    model.compile(
+        loss="categorical_crossentropy",
+        optimizer=opt,
+        metrics=["accuracy", Precision(), Recall()],
+    )
     return model
