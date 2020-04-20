@@ -44,7 +44,7 @@ def predict(model, imageBase64):
         print("{}: {:0.4f}%".format(className, 100 * probability))
 
     # generate the actual class predicted
-    predictedLabel = prediction.argmax(axis=-1)
-    predictedClass = convertIntToClass(predictedLabel[0])
+    predictedLabel = int(prediction.argmax(axis=-1)[0])
+    predictedClass = convertIntToClass(predictedLabel)
     print("\nINFO: predicted class result: {}".format(predictedClass))
     return (predictionProbabilities, predictedLabel, predictedClass)
