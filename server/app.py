@@ -37,6 +37,8 @@ def main():
     prediction['probabilities'] = dict(enumerate(probabilities))
     prediction['label'] = predictedLabel
     prediction['class'] = predictedClass
+    
+    print()
     print(prediction)
     return json.dumps(prediction)
 

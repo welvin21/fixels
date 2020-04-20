@@ -31,20 +31,13 @@ def predict(model, imageBase64):
     image = Image.open(BytesIO(imageBase64Decoded))
     arr = np.array(image)
     arr = resizeImageArray(arr)
-    print(arr.shape)
 
     # predict the confidence values of each classes
-    print("INFO: predicting input image\n")
     prediction = model.predict(arr)
 
-    print("INFO: prediction probability result :\n")
     predictionProbabilities = prediction[0].tolist()
-    for i, probability in enumerate(predictionProbabilities):
-        className = convertIntToClass(i)
-        print("{}: {:0.4f}%".format(className, 100 * probability))
-
     # generate the actual class predicted
     predictedLabel = int(prediction.argmax(axis=-1)[0])
     predictedClass = convertIntToClass(predictedLabel)
-    print("\nINFO: predicted class result: {}".format(predictedClass))
+
     return (predictionProbabilities, predictedLabel, predictedClass)
