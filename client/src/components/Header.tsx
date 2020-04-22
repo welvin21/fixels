@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {
   AppBar,
+  Box,
   Toolbar,
   Typography,
 } from '@material-ui/core';
@@ -22,7 +22,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       color: '#fff',
-      textDecoration: 'none'
+      textDecoration: 'none',
+      '&:hover': {
+        cursor: 'pointer'
+      }
     }
   })
 );
@@ -33,9 +36,9 @@ export const Header: React.FC = () => {
   return (
     <AppBar position="static" className={classes.root}>
       <Toolbar className={classes.toolbar}>
-        <Link to='/demo' className={classes.title}>
-          <Typography variant="h4">DeepEye</Typography>
-        </Link>
+        <Box onClick={ () => window.location.reload() } className={classes.title}>
+          <Typography variant="h4">Fixels</Typography>
+        </Box>
       </Toolbar>
     </AppBar>
   );

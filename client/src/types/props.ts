@@ -5,3 +5,7 @@ export interface ImagePickerProps {
   setImageBase64: (inputImage: string | ArrayBuffer | null) => void;
   setResult: (result: Result) => void;
 }
+
+export interface ResultScreenProps {
+  result: Result | null;
+}

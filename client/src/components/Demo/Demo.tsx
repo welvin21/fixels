@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Container } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { ImagePicker } from './ImagePicker';
+import { ResultScreen } from './ResultScreen';
 import { Result } from '../../types';
 import placeholder from '../../assets/placeholder.jpg';
 
@@ -26,7 +27,5 @@ export const Demo: React.FC = () => {
       </Container>
     );
   else
-    return (
-      <div>{JSON.stringify(result)}</div>
-    );
+    return <ResultScreen result={result}/>;
 };
