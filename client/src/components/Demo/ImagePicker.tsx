@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Container, FormLabel } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { ImagePickerProps } from '../../types';
 import placeholder from '../../assets/placeholder.jpg';
 
 const useStyles = makeStyles((theme: Theme) => 
@@ -38,13 +39,25 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export const ImagePicker: React.FC = () => {
+export const ImagePicker: React.FC<ImagePickerProps> = ({ imageBase64, setImageBase64, setResult }) => {
   const [imageUploadedStatus, setImageUploadedStatus] = useState<boolean>(false);
-  const [imageBase64, setImageBase64] = useState<string | ArrayBuffer | null>(placeholder);
   const classes = useStyles();
 
+  const predict = (): void => {
+    if(imageUploadedStatus && imageBase64 && typeof imageBase64 === 'string')
+      fetch('http://localhost:5000/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ imageBase64: imageBase64.replace(/^data:image\/[a-z]+;base64,/, "") })
+      })
+        .then(res => res.json())
+        .then(res => setResult(res))
+  };
+
   const handleOnImageInputChange = (files: FileList | null): void => {
-    if (!files) return;
+    if (!files || files.length < 1) return;
     const imageFile: File = files[0];
     const fileReader = new FileReader();
     fileReader.readAsDataURL(imageFile);
@@ -68,7 +81,7 @@ export const ImagePicker: React.FC = () => {
             { imageUploadedStatus ? 'Change Image' : 'Upload Image' }
           </Button>
         </FormLabel>
-        <Button className={classes.predictButton} component="span" disabled={!imageUploadedStatus} variant="outlined">
+        <Button className={classes.predictButton} component="span" disabled={!imageUploadedStatus} variant="outlined" onClick={() => predict()}>
           Predict
         </Button>
       </Container>

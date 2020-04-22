@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {
   AppBar,
-  Box,
   Toolbar,
   Typography,
 } from '@material-ui/core';
