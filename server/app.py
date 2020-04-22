@@ -34,7 +34,7 @@ def main():
     probabilities, predictedLabel, predictedClass = predict(model, imageBase64)
     
     prediction = {}
-    prediction['probabilities'] = dict(enumerate(probabilities))
+    prediction['probabilities'] = {"DR": probabilities[0], "NoDR": probabilities[1]}
     prediction['label'] = predictedLabel
     prediction['class'] = predictedClass
     
