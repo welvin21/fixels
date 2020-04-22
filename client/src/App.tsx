@@ -1,5 +1,7 @@
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
+import { Demo } from './components';
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
@@ -15,7 +17,11 @@ export const App: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      hello world
+      <Router>
+         <Switch>
+          <Route exact path="/demo" component={() => <Demo/>} />
+        </Switch>
+      </Router>
     </div>
   );
 };
