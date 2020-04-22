@@ -20,12 +20,9 @@ export const Demo: React.FC = () => {
   const [result, setResult] = useState<Result | null>(null);
   const classes = useStyles();
 
-  if(!result)
-    return (
-      <Container className={classes.root}>
-        <ImagePicker imageBase64={imageBase64} setImageBase64={setImageBase64} setResult={setResult}/>
-      </Container>
-    );
-  else
-    return <ResultScreen result={result}/>;
+  return (
+    <Container className={classes.root}>
+      {result ? <ResultScreen result={result}/> : <ImagePicker imageBase64={imageBase64} setImageBase64={setImageBase64} setResult={setResult}/> }
+    </Container>
+  );
 };
