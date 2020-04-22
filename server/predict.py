@@ -15,6 +15,7 @@ WIDTH = 512
 HEIGHT = 512
 DEPTH = 3
 
+
 def convertIntToClass(i):
     switcher = {0: "No DR", 1: "DR"}
     return switcher.get(i, "Invalid class")
@@ -25,6 +26,7 @@ def resizeImageArray(arr):
     arr = np.array(arr, dtype="float")
     arr = arr.reshape(-1, HEIGHT, WIDTH, DEPTH)
     return arr
+
 
 def predict(model, imageBase64):
     imageBase64Decoded = b64decode(imageBase64)

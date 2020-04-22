@@ -2,30 +2,30 @@ import {
   createMuiTheme,
   responsiveFontSizes,
   Theme,
-} from "@material-ui/core/styles";
+} from '@material-ui/core/styles';
 
 export const theme: Theme = responsiveFontSizes(
   createMuiTheme({
     palette: {
       primary: {
-        light: "#64b5f6",
-        main: "#2196f3",
-        dark: "#1976d2",
+        light: '#80cbc4',
+        main: '#009688',
+        dark: '#004d40',
       },
       background: {
-        default: "#fff",
+        default: '#fff',
       },
     },
     overrides: {
       MuiButton: {
         text: {
-          color: "#fff",
-          backgroundColor: '#2196f3',
+          color: '#fff',
+          backgroundColor: '#009688',
           '&:hover': {
-            backgroundColor: '#1976d2'
-          }
-        }
-      }
-    }
+            backgroundColor: '#004d40',
+          },
+        },
+      },
+    },
   })
 );
