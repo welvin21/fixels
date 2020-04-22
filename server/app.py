@@ -2,11 +2,14 @@ import os
 import json
 from argparse import ArgumentParser
 from flask import Flask, request
+from flask_cors import CORS, cross_origin
 from predict import predict
 from model import createModel
 
 argsParser = ArgumentParser()
-argsParser.add_argument('-m', '--model', required=True, help='path to model weights in .h5 format')
+argsParser.add_argument(
+    "-m", "--model", required=True, help="path to model weights in .h5 format"
+)
 args = vars(argsParser.parse_args())
 
 WIDTH = 512
@@ -16,28 +19,34 @@ INPUT_SHAPE = (HEIGHT, WIDTH, DEPTH)
 NUM_OF_CLASSES = 2
 
 CWD = os.getcwd()
-PATH_TO_MODEL = os.path.join(os.path.sep, CWD, args['model'])
+PATH_TO_MODEL = os.path.join(os.path.sep, CWD, args["model"])
 model = createModel(INPUT_SHAPE, NUM_OF_CLASSES)
 model.load_weights(PATH_TO_MODEL)
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config["CORS_HEADERS"] = "Content-Type"
+
 
 @app.route("/")
+@cross_origin()
 def sample():
     return "ok"
 
+
 @app.route("/predict", methods=["POST"])
+@cross_origin()
 def main():
     req = request.get_json()
-    imageBase64 = req['imageBase64'] 
+    imageBase64 = req["imageBase64"]
 
     probabilities, predictedLabel, predictedClass = predict(model, imageBase64)
-    
+
     prediction = {}
-    prediction['probabilities'] = {"NoDR": probabilities[0], "DR": probabilities[1]}
-    prediction['label'] = predictedLabel
-    prediction['class'] = predictedClass
-    
+    prediction["probabilities"] = {"NoDR": probabilities[0], "DR": probabilities[1]}
+    prediction["label"] = predictedLabel
+    prediction["class"] = predictedClass
+
     print()
     print(prediction)
     return json.dumps(prediction)
