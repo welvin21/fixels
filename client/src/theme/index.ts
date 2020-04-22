@@ -16,5 +16,16 @@ export const theme: Theme = responsiveFontSizes(
         default: "#fff",
       },
     },
+    overrides: {
+      MuiButton: {
+        text: {
+          color: "#fff",
+          backgroundColor: '#2196f3',
+          '&:hover': {
+            backgroundColor: '#1976d2'
+          }
+        }
+      }
+    }
   })
 );

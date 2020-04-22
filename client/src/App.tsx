@@ -6,8 +6,7 @@ import { Demo } from './components';
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
     root: {
-      backgroundColor: theme.palette.primary.light,
-      height: '100vh',
+      backgroundColor: theme.palette.background.default,
     },
   })
 );
