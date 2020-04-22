@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Container } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { ImagePicker } from './ImagePicker';
+import { ResultScreen } from './ResultScreen';
 import { Result } from '../../types';
 import placeholder from '../../assets/placeholder.jpg';
 
@@ -19,14 +20,9 @@ export const Demo: React.FC = () => {
   const [result, setResult] = useState<Result | null>(null);
   const classes = useStyles();
 
-  if(!result)
-    return (
-      <Container className={classes.root}>
-        <ImagePicker imageBase64={imageBase64} setImageBase64={setImageBase64} setResult={setResult}/>
-      </Container>
-    );
-  else
-    return (
-      <div>{JSON.stringify(result)}</div>
-    );
+  return (
+    <Container className={classes.root}>
+      {result ? <ResultScreen result={result}/> : <ImagePicker imageBase64={imageBase64} setImageBase64={setImageBase64} setResult={setResult}/> }
+    </Container>
+  );
 };

@@ -54,6 +54,7 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({ imageBase64, setImageB
       })
         .then(res => res.json())
         .then(res => setResult(res))
+        .catch(err => console.log(err))
   };
 
   const handleOnImageInputChange = (files: FileList | null): void => {
