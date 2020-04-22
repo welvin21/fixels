@@ -1,8 +1,20 @@
 import React from 'react';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-export const App = () => {
+const useStyles = makeStyles((theme: Theme) => 
+  createStyles({
+    root: {
+      backgroundColor: theme.palette.primary.light,
+      height: '100vh',
+    },
+  })
+);
+
+export const App: React.FC = () => {
+  const classes = useStyles();
+
   return (
-    <div className="App">
+    <div className={classes.root}>
       hello world
     </div>
   );
