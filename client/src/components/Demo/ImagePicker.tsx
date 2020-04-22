@@ -6,7 +6,6 @@ import placeholder from '../../assets/placeholder.jpg';
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
     root: {
-      height: '100vh',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',

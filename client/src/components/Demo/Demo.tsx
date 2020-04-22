@@ -6,6 +6,7 @@ import { ImagePicker } from './ImagePicker';
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
     root: {
+      padding: `${theme.spacing(10)}px 0px`,
       width: '100%',
     }
   })
