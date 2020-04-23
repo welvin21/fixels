@@ -37,7 +37,7 @@ export const Header: React.FC = () => {
     <AppBar position="static" className={classes.root}>
       <Toolbar className={classes.toolbar}>
         <Box onClick={ () => window.location.reload() } className={classes.title}>
-          <Typography variant="h3">Fixels</Typography>
+          <Typography variant="h4">Fixels</Typography>
         </Box>
       </Toolbar>
     </AppBar>
