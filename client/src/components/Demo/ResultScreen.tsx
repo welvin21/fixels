@@ -36,7 +36,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ result }) => {
   return (
     <Container className={classes.root}>
       <Typography variant="h5" className={classes.title}>Prediction</Typography>
-      <PieChart width={400} height={400}>
+      <PieChart width={250} height={250}>
         <Pie isAnimationActive={true} data={pieDataChart} dataKey='probability' outerRadius={80} fill='#009688' label/>
         <Tooltip/>
       </PieChart>
