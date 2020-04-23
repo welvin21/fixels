@@ -18,7 +18,7 @@ from keras.preprocessing.image import (
 from sklearn.model_selection import train_test_split
 from keras.utils import to_categorical, print_summary
 from keras.callbacks import EarlyStopping
-from model import createModel
+from model import Model
 
 # Fetch training param from argparse
 argParser = ArgumentParser()
@@ -214,7 +214,8 @@ aug = ImageDataGenerator(
 
 # initialize model
 print("INFO: compiling cnn model\n")
-model = createModel(inputShape, NUM_OF_CLASSES)
+modelInstance = Model(inputShape, NUM_OF_CLASSES)
+model = modelInstance.createModel()
 print("INFO: model is ready : {}\n".format(model))
 print("INFO: model summary")
 print_summary(model, line_length=None, positions=None, print_fn=None)
