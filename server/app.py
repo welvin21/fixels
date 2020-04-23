@@ -3,8 +3,8 @@ import json
 from argparse import ArgumentParser
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
-from predict import predict
-from model import createModel
+from predict import Predictor
+from model import Model
 
 argsParser = ArgumentParser()
 argsParser.add_argument(
@@ -12,15 +12,13 @@ argsParser.add_argument(
 )
 args = vars(argsParser.parse_args())
 
-WIDTH = 512
-HEIGHT = 512
-DEPTH = 3
-INPUT_SHAPE = (HEIGHT, WIDTH, DEPTH)
+INPUT_SHAPE = (512, 512, 3)
 NUM_OF_CLASSES = 2
 
 CWD = os.getcwd()
 PATH_TO_MODEL = os.path.join(os.path.sep, CWD, args["model"])
-model = createModel(INPUT_SHAPE, NUM_OF_CLASSES)
+modelInstance = Model(INPUT_SHAPE, NUM_OF_CLASSES)
+model = modelInstance.createModel()
 model.load_weights(PATH_TO_MODEL)
 
 app = Flask(__name__)
@@ -40,7 +38,8 @@ def main():
     req = request.get_json()
     imageBase64 = req["imageBase64"]
 
-    probabilities, predictedLabel, predictedClass = predict(model, imageBase64)
+    predictorInstance = Predictor(model, imageBase64)
+    probabilities, predictedLabel, predictedClass = predictorInstance.predict()
 
     prediction = {}
     prediction["probabilities"] = {"NoDR": probabilities[0], "DR": probabilities[1]}
