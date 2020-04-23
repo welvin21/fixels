@@ -27,5 +27,8 @@ export const theme: Theme = responsiveFontSizes(
         },
       },
     },
+    typography: {
+      fontFamily: "'Raleway', sans-serif",
+    },
   })
 );

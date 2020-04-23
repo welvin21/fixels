@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Typography, Box } from '@material-ui/core';
+import { Container, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { PieChart, Pie, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { ResultScreenProps } from '../../types';
