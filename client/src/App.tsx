@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
-import { Demo, Header } from './components';
+import { Demo, Header, NotFound, Footer } from './components';
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
@@ -20,7 +20,9 @@ export const App: React.FC = () => {
         <Header/>
         <Switch>
           <Route exact path="/demo" component={() => <Demo/>} />
+          <Route path="*" component={() => <NotFound/>} />
         </Switch>
+        <Footer/>
       </Router>
     </div>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Container, Typography, Box } from '@material-ui/core';
+import { Container, Typography } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { PieChart, Pie, Tooltip } from 'recharts';
+import { PieChart, Pie, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { ResultScreenProps } from '../../types';
 
 const useStyles = makeStyles((theme: Theme) => 
@@ -29,18 +29,22 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ result }) => {
   
   const { probabilities: { NoDR, DR } } = result;
   const pieDataChart = [
-    { name: 'No DR probability', probability: Math.round(NoDR*10000) / 100 }, 
-    { name: 'DR probability', probability: Math.round(DR*10000) / 100 }
+    { name: 'No DR probability', probability: Math.round(NoDR*10000) / 100, fill: '#00c9b6' }, 
+    { name: 'DR probability', probability: Math.round(DR*10000) / 100, fill: '#007F73' }
   ];
 
   return (
     <Container className={classes.root}>
       <Typography variant="h5" className={classes.title}>Prediction</Typography>
-      <PieChart width={400} height={400}>
-        <Pie isAnimationActive={true} data={pieDataChart} dataKey='probability' outerRadius={80} fill='#009688' label/>
-        <Tooltip/>
-      </PieChart>
-      <Box></Box>
+      <ResponsiveContainer width={'100%'} height={300}>
+        <PieChart>
+          <Pie isAnimationActive={true} data={pieDataChart} dataKey='probability' outerRadius={80} label>
+            {pieDataChart.map((item, index) => <Cell key={index} fill={item.fill}/>)}
+          </Pie>
+          <Tooltip/>
+          <Legend/>
+        </PieChart>
+      </ResponsiveContainer>
     </Container>
   );
 }
