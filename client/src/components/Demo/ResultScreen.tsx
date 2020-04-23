@@ -29,8 +29,8 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ result }) => {
   
   const { probabilities: { NoDR, DR } } = result;
   const pieDataChart = [
-    { name: 'No DR probability', probability: Math.round(NoDR*10000) / 100, fill: '#004d40' }, 
-    { name: 'DR probability', probability: Math.round(DR*10000) / 100, fill: '#80cbc4' }
+    { name: 'No DR probability', probability: Math.round(NoDR*10000) / 100, fill: '#00c9b6' }, 
+    { name: 'DR probability', probability: Math.round(DR*10000) / 100, fill: '#007F73' }
   ];
 
   return (
@@ -45,7 +45,6 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ result }) => {
           <Legend/>
         </PieChart>
       </ResponsiveContainer>
-      <Box></Box>
     </Container>
   );
 }
