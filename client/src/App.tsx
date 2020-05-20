@@ -3,7 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { Demo, Header, NotFound, Footer } from './components';
 
-const useStyles = makeStyles((theme: Theme) => 
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       backgroundColor: theme.palette.background.default,
@@ -17,12 +17,12 @@ export const App: React.FC = () => {
   return (
     <div className={classes.root}>
       <Router>
-        <Header/>
+        <Header />
         <Switch>
-          <Route exact path="/demo" component={() => <Demo/>} />
-          <Route path="*" component={() => <NotFound/>} />
+          <Route exact path="/demo" component={() => <Demo />} />
+          <Route path="*" component={() => <NotFound />} />
         </Switch>
-        <Footer/>
+        <Footer />
       </Router>
     </div>
   );

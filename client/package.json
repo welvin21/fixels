@@ -26,7 +26,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint . --ext .ts --ext .tsx"
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write ."
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -60,7 +61,7 @@
   },
   "lint-staged": {
     "*.{js,ts,css,json,md}": [
-      "prettier --write",
+      "prettier --write .",
       "npm run lint"
     ]
   }
