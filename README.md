@@ -6,9 +6,9 @@ Fixels is an application that aims to give quick diabetic retinopathy prediction
 
 In fixels, we use a python server with all the machine learning related modules including [keras](https://keras.io/) and [tensorflow](https://www.tensorflow.org/) to train our model and generate prediction based on that model. For the client-side, it's a simple web application built using [react](https://react.com) and [typescript](https://www.typescriptlang.org/) for now. We are planning to develop the mobile version in the future. 
 
-## Presentation
+## Presentation and report
 
-See our presentation [here](https://docs.google.com/presentation/d/1CYVJtrq3uHt2-6hDp-QX7ag71pEPAqrRGTvqHc5mds8/edit#slide=id.g7fc3b92232_1_49)
+See our presentation [here](https://docs.google.com/presentation/d/1CYVJtrq3uHt2-6hDp-QX7ag71pEPAqrRGTvqHc5mds8/edit#slide=id.g7fc3b92232_1_49), and our report [here](https://docs.google.com/document/d/1LZa8fqrnkVMQ4Fa4gENu2jrBmWHiHxfJiUicABZoceI/edit?usp=sharing).
 
 ## Other contributors
 [Fernando Julio Cendra](https://github.com/fcendra)
